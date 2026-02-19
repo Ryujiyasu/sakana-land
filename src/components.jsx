@@ -4,11 +4,13 @@ import { sounds } from './sounds.js';
 
 export function TopBar({ label, onBack }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 4px', marginBottom: 10 }}>
-      <button onClick={() => { sounds.tap(); onBack(); }} style={{
-        ...baseBtn, background: 'rgba(255,255,255,0.2)', padding: '8px 16px', fontSize: 16, borderRadius: 20,
-        border: '2px solid rgba(255,255,255,0.3)',
-      }}>← もどる</button>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: onBack ? 'space-between' : 'center', padding: '8px 4px', marginBottom: 10 }}>
+      {onBack && (
+        <button onClick={() => { sounds.tap(); onBack(); }} style={{
+          ...baseBtn, background: 'rgba(255,255,255,0.2)', padding: '8px 16px', fontSize: 16, borderRadius: 20,
+          border: '2px solid rgba(255,255,255,0.3)',
+        }}>← もどる</button>
+      )}
       <span style={{ color: '#fff', fontWeight: 900, fontSize: 18 }}>{label}</span>
     </div>
   );
