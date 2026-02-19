@@ -15,11 +15,12 @@ export function TopBar({ label, onBack }) {
 }
 
 // 海の生き物の画像表示コンポーネント（写真があれば写真、なければemoji）
+const base = import.meta.env.BASE_URL;
 export function SeaCreatureImg({ item, size = 60, style: extraStyle = {} }) {
   if (item.img) {
     return (
       <img
-        src={item.img}
+        src={base + item.img.replace(/^\//, '')}
         alt={item.name}
         style={{
           width: size,
