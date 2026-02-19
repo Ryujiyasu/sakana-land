@@ -221,6 +221,12 @@ export default function AiueoChart({ onBack }) {
               color: rowColor, textShadow: '3px 3px 0 rgba(0,0,0,0.25)',
             }}>{current.kana}</div>
             {renderName(current)}
+            {current.fun && (
+              <div style={{
+                color: '#E1F5FE', fontSize: 'clamp(11px, 2.5vh, 14px)',
+                fontWeight: 700, marginTop: 4, lineHeight: 1.4, maxWidth: 200, textAlign: 'center',
+              }}>{current.fun}</div>
+            )}
             <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 11, marginTop: 4 }}>
               {idx + 1} / {ALL_KANA.length}
             </div>
@@ -251,20 +257,23 @@ export default function AiueoChart({ onBack }) {
 
       <TopBar label="あいうえお" onBack={onBack} />
 
-      <div key={animKey} style={{
-        ...cardStyle, flex: 1, width: '100%',
-        background: 'linear-gradient(160deg, rgba(255,255,255,0.18), rgba(255,255,255,0.05))',
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        padding: '8px 16px',
-        animation: `${slideAnim} 0.3s ease`,
-        position: 'relative', overflow: 'hidden',
+      <div key={animKey}
+        onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}
+        style={{
+          ...cardStyle, flex: 1, width: '100%',
+          background: 'linear-gradient(160deg, rgba(255,255,255,0.18), rgba(255,255,255,0.05))',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          padding: '8px 16px',
+          animation: `${slideAnim} 0.3s ease`,
+          position: 'relative', overflow: 'hidden',
+          touchAction: 'none',
       }}>
         {/* イラスト — 画面めいっぱい */}
         <div style={{
           flex: 1, width: '100%',
           animation: 'swim 2.5s ease-in-out infinite',
           zIndex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center',
-          minHeight: 0,
+          minHeight: 0, pointerEvents: 'none',
         }}>
           <img
             src={imgBase + current.img.replace(/^\//, '')}
@@ -273,14 +282,22 @@ export default function AiueoChart({ onBack }) {
           />
         </div>
 
-        {/* ひらがな＋なまえ */}
-        <div style={{ zIndex: 1, textAlign: 'center', flexShrink: 0, padding: '4px 0' }}>
-          <span style={{
-            fontSize: 'clamp(40px, 12vw, 70px)', fontWeight: 900, lineHeight: 1,
-            color: rowColor, textShadow: '2px 2px 0 rgba(0,0,0,0.25)',
-            marginRight: 8, verticalAlign: 'middle',
-          }}>{current.kana}</span>
-          {renderName(current)}
+        {/* ひらがな＋なまえ＋解説 */}
+        <div style={{ zIndex: 1, textAlign: 'center', flexShrink: 0, padding: '4px 0', pointerEvents: 'none' }}>
+          <div>
+            <span style={{
+              fontSize: 'clamp(40px, 12vw, 70px)', fontWeight: 900, lineHeight: 1,
+              color: rowColor, textShadow: '2px 2px 0 rgba(0,0,0,0.25)',
+              marginRight: 8, verticalAlign: 'middle',
+            }}>{current.kana}</span>
+            {renderName(current)}
+          </div>
+          {current.fun && (
+            <div style={{
+              color: '#E1F5FE', fontSize: 'clamp(12px, 3.5vw, 16px)',
+              fontWeight: 700, marginTop: 4, lineHeight: 1.4,
+            }}>{current.fun}</div>
+          )}
         </div>
 
         {navBtn(-1, 'left')}
