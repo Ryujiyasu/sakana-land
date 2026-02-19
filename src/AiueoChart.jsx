@@ -262,18 +262,16 @@ export default function AiueoChart({ onBack }) {
         style={{
           ...cardStyle, flex: 1, width: '100%',
           background: 'linear-gradient(160deg, rgba(255,255,255,0.18), rgba(255,255,255,0.05))',
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-          padding: '8px 16px',
           animation: `${slideAnim} 0.3s ease`,
           position: 'relative', overflow: 'hidden',
           touchAction: 'none',
       }}>
-        {/* イラスト — 画面めいっぱい */}
+        {/* イラスト — 画面全体に表示 */}
         <div style={{
-          flex: 1, width: '100%',
+          position: 'absolute', inset: 0,
           animation: 'swim 2.5s ease-in-out infinite',
-          zIndex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center',
-          minHeight: 0, pointerEvents: 'none',
+          display: 'flex', justifyContent: 'center', alignItems: 'center',
+          padding: 12, pointerEvents: 'none',
         }}>
           <img
             src={imgBase + current.img.replace(/^\//, '')}
@@ -282,20 +280,26 @@ export default function AiueoChart({ onBack }) {
           />
         </div>
 
-        {/* ひらがな＋なまえ＋解説 */}
-        <div style={{ zIndex: 1, textAlign: 'center', flexShrink: 0, padding: '4px 0', pointerEvents: 'none' }}>
+        {/* ひらがな＋なまえ＋解説 — 下部にオーバーレイ */}
+        <div style={{
+          position: 'absolute', left: 0, right: 0, bottom: 0,
+          background: 'linear-gradient(transparent, rgba(0,0,0,0.6) 30%)',
+          padding: '32px 16px 12px',
+          textAlign: 'center', pointerEvents: 'none',
+        }}>
           <div>
             <span style={{
-              fontSize: 'clamp(40px, 12vw, 70px)', fontWeight: 900, lineHeight: 1,
-              color: rowColor, textShadow: '2px 2px 0 rgba(0,0,0,0.25)',
+              fontSize: 'clamp(36px, 10vw, 60px)', fontWeight: 900, lineHeight: 1,
+              color: rowColor, textShadow: '2px 2px 0 rgba(0,0,0,0.5)',
               marginRight: 8, verticalAlign: 'middle',
             }}>{current.kana}</span>
             {renderName(current)}
           </div>
           {current.fun && (
             <div style={{
-              color: '#E1F5FE', fontSize: 'clamp(12px, 3.5vw, 16px)',
-              fontWeight: 700, marginTop: 4, lineHeight: 1.4,
+              color: '#E1F5FE', fontSize: 'clamp(12px, 3.5vw, 15px)',
+              fontWeight: 700, marginTop: 4, lineHeight: 1.3,
+              textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
             }}>{current.fun}</div>
           )}
         </div>
