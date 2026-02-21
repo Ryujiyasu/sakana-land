@@ -22,12 +22,20 @@ function getRowForKana(kana) {
 
 const imgBase = import.meta.env.BASE_URL;
 
+// カタカナ→ひらがな変換
+function toHiragana(str) {
+  return str.replace(/[\u30A1-\u30F6]/g, ch =>
+    String.fromCharCode(ch.charCodeAt(0) - 0x60)
+  );
+}
+
 export default function AiueoChart({ onBack }) {
   const [idx, setIdx] = useState(0);
   const [slideDir, setSlideDir] = useState(0);
   const [animKey, setAnimKey] = useState(0);
   const [landscape, setLandscape] = useState(window.innerWidth > window.innerHeight);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [mode, setMode] = useState('katakana'); // 'hiragana' | 'katakana'
   const touchRef = useRef(null);
   const touchYRef = useRef(null);
 
@@ -79,11 +87,15 @@ export default function AiueoChart({ onBack }) {
     setDrawerOpen(false);
   };
 
+  const convert = mode === 'hiragana' ? toHiragana : (s) => s;
+
   const renderName = (cell) => {
     const fs = landscape ? 'clamp(18px, 4vh, 28px)' : 'clamp(22px, 6vw, 32px)';
     const hl = landscape ? 'clamp(24px, 6vh, 38px)' : 'clamp(30px, 8vw, 44px)';
+    const name = convert(cell.name);
     if (cell.special) {
-      const parts = cell.special.split(/[「」]/);
+      const converted = convert(cell.special);
+      const parts = converted.split(/[「」]/);
       return (
         <span style={{ fontSize: fs, fontWeight: 900, color: '#fff' }}>
           {parts[0]}<span style={{ color: '#FFD54F', fontSize: hl }}>{parts[1]}</span>{parts[2]}
@@ -92,7 +104,7 @@ export default function AiueoChart({ onBack }) {
     }
     return (
       <span style={{ fontSize: fs, fontWeight: 900, color: '#fff' }}>
-        <span style={{ color: '#FFD54F', fontSize: hl }}>{cell.name.charAt(0)}</span>{cell.name.slice(1)}
+        <span style={{ color: '#FFD54F', fontSize: hl }}>{name.charAt(0)}</span>{name.slice(1)}
       </span>
     );
   };
@@ -111,6 +123,22 @@ export default function AiueoChart({ onBack }) {
       }}>{dir === -1 ? '◀' : '▶'}</button>
     );
   };
+
+  const modeToggle = (
+    <div style={{ display: 'flex', gap: 4, justifyContent: 'center', margin: '6px 0' }}>
+      {['hiragana', 'katakana'].map(m => (
+        <button key={m} onClick={() => { sounds.tap(); setMode(m); }} style={{
+          padding: '5px 14px', fontSize: 13, fontWeight: 900, borderRadius: 14,
+          border: `2px solid ${mode === m ? '#FFD54F' : 'rgba(255,255,255,0.15)'}`,
+          background: mode === m ? 'rgba(255,213,79,0.3)' : 'rgba(255,255,255,0.08)',
+          color: mode === m ? '#FFD54F' : '#B2EBF2',
+          cursor: 'pointer', fontFamily: "'Noto Sans JP', sans-serif",
+        }}>
+          {m === 'hiragana' ? 'ひらがな' : 'カタカナ'}
+        </button>
+      ))}
+    </div>
+  );
 
   // 引き出しパネル（かなバー）
   const drawer = (
@@ -180,7 +208,7 @@ export default function AiueoChart({ onBack }) {
   if (landscape) {
     return (
       <div style={{
-        width: '100%', height: '100vh', display: 'flex', overflow: 'hidden',
+        width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden',
         padding: '4px 8px',
       }}
         onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}
@@ -189,6 +217,8 @@ export default function AiueoChart({ onBack }) {
           @keyframes slideInRight { from { transform: translateX(60px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
           @keyframes slideInLeft  { from { transform: translateX(-60px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         `}</style>
+
+        {modeToggle}
 
         <div key={animKey} style={{
           ...cardStyle, flex: 1,
@@ -256,6 +286,7 @@ export default function AiueoChart({ onBack }) {
       `}</style>
 
       <TopBar label="あいうえお" onBack={onBack} />
+      {modeToggle}
 
       <div key={animKey}
         onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}
